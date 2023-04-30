@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Content-Hub</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='styles/global.css') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <style>
+      select {
+        width: 400px;
+        padding: 8px;
+      }
+      button {
+        margin-top: -3px;
+        margin-left: 10px;
+      }
+
+      #img,
+      #name {
+        width: 14rem;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <nav class="navbar bg-body-tertiary mt-3">
+      <div class="container pr-5 pl-5 mr-5 pd-1">
+        <a
+          class="navbar-brand"
+          href="/"
+          style="font-weight: bold; font-size: 24px"
+        >
+          CONTENT-HUB
+        </a>
+        <div class="d-flex flex-row">
+          <a href="/" class="nav-link pd-2 m-3">Home</a>
+          <a href="#" class="nav-link pd-2 m-3">Movies</a>
+          <a href="#" class="nav-link pd-2 m-3">TV Shows</a>
+          <a
+            href="#"
+            class="nav-link pd-2 m-3"
+            style="border-bottom: 1.5px solid black"
+            >Recommend</a
+          >
+          <a href="#" class="nav-link pd-2 m-3">Top-50</a>
+        </div>
+      </div>
+    </nav>
+    <center class="pd-5">
+      <h2 class="mt-4 mb-5">Movie List</h2>
+      <select id="selectedMovie">
+        <option value="-1" disabled selected>Select a movie</option>
+      </select>
+      <button id="reccBtn" class="btn btn-outline-info" onclick="recommend()">
+        Recommend
+      </button>
+      <button id="reccBtn" class="btn btn-outline-danger" onclick="location.reload()">
+        Clear
+      </button>
+    </center>
+
+    <main class="m-5">
+      <div class="container">
+        <div
+          id="row-col-container"
+          class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3"
+        >
+          <!-- <center class="col">
+                <img id="img" class="rounded-top" src="https://image.tmdb.org/t/p/w500//qJ2tW6WMUDux911r6m7haRef0WH.jpg" alt="img">
+                <div id="name" class="p-3 border rounded-bottom">The Dark Knight</div>
+              </center> -->
+        </div>
+      </div>
+    </main>
+  </body>
+  <script>
+    async function getMoviesList() {
+      const res = await fetch("/api/movies");
+      let data = await res.json();
+      await populateData(data.slice(0, -3));
+      return data;
+    }
+
+    async function populateData(ml) {
+      for (let i = 0; i < ml.length; i++) {
+        const node = document.createElement("option");
+        node.setAttribute("value", i.toString());
+        node.innerText = ml[i];
+        document.getElementById("selectedMovie").appendChild(node);
+      }
+    }
+    getMoviesList();
+
+    async function recommend() {
+    //   let btn = document.getElementById("reccBtn");
+    //   btn.setAttribute("disabled", "true");
+    //   window.setTimeout(function () {
+    //     btn.setAttribute("disabled", "false");
+    //     console.log("Aaa")
+    //   }, 2000);
+
+      var e = document.getElementById("selectedMovie");
+      var value = e.options[e.selectedIndex].value;
+      if (value == -1) {
+        console.log("Please select a movie to recommend");
+        return;
+      }
+      var movieName = e.options[e.selectedIndex].text;
+
+      async function getRecommend(url) {
+        const response = await fetch(url);
+        let data = await response.json();
+        // console.log(data);
+        return data;
+      }
+      recommendedMovies = await getRecommend(`/api/recommend/${movieName}`);
+      if (
+        recommendedMovies[0].length === 0 ||
+        recommendedMovies[1].length === 0
+      ) {
+        console.log("Could'nt find matches");
+        return;
+      }
+
+      for (let i = 0; i < recommendedMovies[0].length; i++) {
+        let centerTag = document.createElement("center");
+        centerTag.classList.add("col");
+
+        let imgTag = document.createElement("img");
+        imgTag.setAttribute("class", "rounded-top");
+        imgTag.setAttribute("id", "img");
+        imgTag.setAttribute("src", `${recommendedMovies[1][i]}`);
+        imgTag.setAttribute("alt", "img");
+
+        let nameTag = document.createElement("div");
+        nameTag.classList += "p-3 border rounded-bottom";
+        nameTag.setAttribute("id", "name");
+        nameTag.innerText = recommendedMovies[0][i];
+
+        let rcc = document.getElementById("row-col-container");
+        rcc.appendChild(centerTag);
+
+        centerTag.appendChild(imgTag);
+        centerTag.appendChild(nameTag);
+      }
+    }
+  </script>
+</html>
