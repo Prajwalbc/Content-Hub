@@ -18,7 +18,21 @@ def home_page():
 def recommend_page():
     return render_template("recommend.html")
 
+@app.route('/movies')
+def movies():
+    return render_template("movies.html")
+
 # APIs
+
+#Movies section
+@app.route("/api/now_playing")
+def now_playing():
+    #now playing
+    url = "https://api.themoviedb.org/3/movie/now_playing?api_key=981e4edeb003b823a185e465213bc596&language=en-US&page=1"
+    now_playing = requests.get(url)
+    return now_playing.json()
+
+#Recommend section
 @app.route('/api/movies')
 def movies_api():
     return jsonify(movieList.tolist())
