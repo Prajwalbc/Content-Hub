@@ -22,6 +22,11 @@ def recommend_page():
 def movies():
     return render_template("movies.html")
 
+@app.route('/movies/<movie_id>')
+def get_movie_desc(movie_id):
+    return render_template("movie_desc.html")
+    
+
 # APIs
 
 #Movies section

@@ -48,7 +48,7 @@
       </div>
     </nav>
     <!-- Carousel -->
-    <p id="sub-title">Discover</p>
+    <!-- <p id="sub-title">Now Playing</p> -->
     <div
       id="carouselExampleCaptions"
       class="carousel slide"
@@ -78,37 +78,31 @@
       </div>
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img
-            src=""
-            class="d-block w-100 rounded"
-            id="carousel-img"
-            alt="..."
-          />
-          <div id="carousel-title-bg" class="carousel-caption d-none d-md-block">
+          <img src="" class="d-block w-100" id="carousel-img" alt="..." />
+          <div
+            id="carousel-title-bg"
+            class="carousel-caption d-none d-md-block"
+          >
             <h5 id="carousel-title"></h5>
             <p id="carousel-overview"></p>
           </div>
         </div>
         <div class="carousel-item">
-          <img
-            src=""
-            class="d-block w-100 rounded"
-            id="carousel-img"
-            alt="..."
-          />
-          <div id="carousel-title-bg" class="carousel-caption d-none d-md-block">
+          <img src="" class="d-block w-100" id="carousel-img" alt="..." />
+          <div
+            id="carousel-title-bg"
+            class="carousel-caption d-none d-md-block"
+          >
             <h5 id="carousel-title"></h5>
             <p id="carousel-overview"></p>
           </div>
         </div>
         <div class="carousel-item">
-          <img
-            src=""
-            class="d-block w-100 rounded"
-            id="carousel-img"
-            alt="..."
-          />
-          <div id="carousel-title-bg" class="carousel-caption d-none d-md-block">
+          <img src="" class="d-block w-100" id="carousel-img" alt="..." />
+          <div
+            id="carousel-title-bg"
+            class="carousel-caption d-none d-md-block"
+          >
             <h5 id="carousel-title"></h5>
             <p id="carousel-overview"></p>
           </div>
@@ -133,28 +127,105 @@
         <span class="visually-hidden">Next</span>
       </button>
     </div>
+    <p id="sub-title-2">Popular</p>
+    <ul
+      id="card-container"
+      class="list-group list-group-horizontal position-relative overflow-auto w-100"
+    >
+      <li id="card-lst" class="list-group-item">
+        <div>
+          <img data-value="" id="card-item-img" src="" alt="..." />
+        </div>
+      </li>
+      <li id="card-lst" class="list-group-item">
+        <div>
+          <img data-value="" id="card-item-img" src="" alt="..." />
+        </div>
+      </li>
+      <li id="card-lst" class="list-group-item">
+        <div>
+          <img data-value="" id="card-item-img" src="" alt="..." />
+        </div>
+      </li>
+      <li id="card-lst" class="list-group-item">
+        <div>
+          <img data-value="" id="card-item-img" src="" alt="..." />
+        </div>
+      </li>
+      <li id="card-lst" class="list-group-item">
+        <div>
+          <img data-value="" id="card-item-img" src="" alt="..." />
+        </div>
+      </li>
+      <li id="card-lst" class="list-group-item">
+        <div>
+          <img data-value="" id="card-item-img" src="" alt="..." />
+        </div>
+      </li>
+      <li id="card-lst" class="list-group-item">
+        <div>
+          <img data-value="" id="card-item-img" src="" alt="..." />
+        </div>
+      </li>
+      <li id="card-lst" class="list-group-item">
+        <div>
+          <img data-value="" id="card-item-img" src="" alt="..." />
+        </div>
+      </li>
+      <li id="card-lst" class="list-group-item">
+        <div>
+          <img data-value="" id="card-item-img" src="" alt="..." />
+        </div>
+      </li>
+      <li id="card-lst" class="list-group-item">
+        <div>
+          <img data-value="" id="card-item-img" src="" alt="..." />
+        </div>
+      </li>
+    </ul>
   </body>
   <style>
-    #carousel-title-bg{
+    #carousel-title-bg {
       background: rgba(0, 0, 0, 0.65);
       border-radius: 15px 50px;
       padding-right: 2rem;
       padding-left: 2rem;
-      margin-bottom: 1.5rem;
+      /* margin-bottom: 1.5rem; */
     }
     #carousel-img {
-      height: 60vh;
+      height: 70vh;
       object-fit: cover;
-      border-radius: 500px;
     }
     #sub-title {
       font-size: 24px;
-      padding: 20px 0px 8px 4.5rem;
+      padding: 25px 0px 15px 4.5rem;
       font-weight: bold;
+    }
+    #sub-title-2 {
+      font-size: 24px;
+      padding: 30px 0px 0px 4.5rem;
+      font-weight: bold;
+      margin-bottom: 0px !important;
     }
     #carousel-title {
       font-weight: bold;
       font-size: 26px;
+    }
+    .list-group-item {
+      border-style: none !important;
+    }
+    #card-container {
+      padding-top: 0px !important;
+    }
+    #card-item-img {
+      width: 200px;
+      height: 300px;
+      border-radius: 20px;
+      object-fit: contain;
+    }
+    #card-lst {
+      margin: 2rem 20px;
+      padding: 0 !important;
     }
   </style>
   <script>
@@ -162,7 +233,11 @@
     let carouselTitle = document.querySelectorAll("#carousel-title");
     let carouselOverview = document.querySelectorAll("#carousel-overview");
 
+    // let popularCard = document.querySelectorAll("#card-item");
+    let popularCardImg = document.querySelectorAll("#card-item-img");
+
     let url = "https://image.tmdb.org/t/p/original";
+    let cardUrl = "https://image.tmdb.org/t/p/w500/";
 
     function randomIntFromInterval(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
@@ -171,23 +246,48 @@
     async function getNowPlaying() {
       const res = await fetch("/api/now_playing");
       let data = await res.json();
-
-      console.log(data.results[0].id);
-
       let num = randomIntFromInterval(3, data.results.length - 3);
 
       for (let i = 0; i < carouselImgs.length; i++) {
         if (data.results.length !== 0) {
           carouselImgs[i].setAttribute(
             "src",
-            `${url}${data.results[i+num].backdrop_path}`
+            `${url}${data.results[i + num].backdrop_path}`
           );
-          carouselTitle[i].innerHTML = `${data.results[i+num].original_title}`;
-          carouselOverview[i].innerHTML = `${data.results[i+num].overview}`;
+          carouselTitle[i].innerHTML = `${
+            data.results[i + num].original_title
+          }`;
+          carouselOverview[i].innerHTML = `${data.results[i + num].overview}`;
         }
       }
     }
 
+    async function getPopular() {
+      const a = await fetch(
+        "https://api.themoviedb.org/3/movie/popular?api_key=981e4edeb003b823a185e465213bc596&language=en-US&page=1"
+      );
+      let data = await a.json();
+
+      if (data.results.length !== 0) {
+        for (let i = 0; i < popularCardImg.length; i++) {
+          popularCardImg[i].setAttribute(
+            "src",
+            `${cardUrl}${data.results[i].poster_path}`
+          );
+          popularCardImg[i].setAttribute("data-value", `${data.results[i].id}`);
+        }
+      }
+    }
+
+    const getMovieDetails = (e) => {
+      window.location.href = `/movies/${e.target.getAttribute("data-value")}`;
+    };
+
+    for (let card of popularCardImg) {
+      card.addEventListener("click", getMovieDetails);
+    }
+
     getNowPlaying();
+    getPopular();
   </script>
 </html>
