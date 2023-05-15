@@ -67,6 +67,12 @@ def recommend_api(movie):
     except:
         print("**********SERVER ERROR************")
         return jsonify([])
+    
+@app.route('/api/movie_desc/<movie_id>')
+def movie_desc(movie_id):
+    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=981e4edeb003b823a185e465213bc596&language=en-US"
+    desc = requests.get(url)
+    return desc.json()
 
 if __name__ == '__main__':
     app.run(debug=True)

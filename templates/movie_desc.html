@@ -43,12 +43,25 @@
           >
           <!-- <a href="/tv_shows" class="nav-link pd-2 m-3">TV Shows</a> -->
           <a href="/recommend" class="nav-link pd-2 m-3">Recommend</a>
-          <a href="#" class="nav-link pd-2 m-3">Top-50</a>
+          <!-- <a href="#" class="nav-link pd-2 m-3">Top-50</a> -->
         </div>
       </div>
     </nav>
-    <center>
-        <h1>Movie description</h1>
-    </center>
+    <img id="img" src="" class="img-fluid" alt="Responsive image">
   </body>
+  <script>
+    let url = window.location.pathname;
+    let movieId = url.substring(url.lastIndexOf('/') + 1);  
+    
+    async function getDesc(){
+      const res = await fetch(`/api/movie_desc/${movieId}`);
+      let desc = await res.json();
+      let a = document.getElementById("img")
+      await a.setAttribute("src", "https://image.tmdb.org/t/p/original" + desc.poster_path);
+      // await a.setAttribute("src", "https://image.tmdb.org/t/p/w500/" + desc.poster_path);
+      console.log(desc);
+    }
+
+    getDesc();
+  </script>
 </html>

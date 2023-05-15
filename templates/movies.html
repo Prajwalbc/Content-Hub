@@ -22,6 +22,7 @@
       crossorigin="anonymous"
       defer
     ></script>
+    <script src="https://d3js.org/d3.v6.js"></script>
   </head>
   <body>
     <nav class="navbar p-4" style="background-color: rgb(142, 255, 206)">
@@ -43,7 +44,7 @@
           >
           <!-- <a href="/tv_shows" class="nav-link pd-2 m-3">TV Shows</a> -->
           <a href="/recommend" class="nav-link pd-2 m-3">Recommend</a>
-          <a href="#" class="nav-link pd-2 m-3">Top-50</a>
+          <!-- <a href="#" class="nav-link pd-2 m-3">Top-50</a> -->
         </div>
       </div>
     </nav>
@@ -183,6 +184,12 @@
         </div>
       </li>
     </ul>
+    <!-- <p id="sub-title">Now Playing</p> -->
+    <p id="sub-title-2" style="padding-top: 1rem">Popular Stats</p>
+    <!-- <div id="my_dataviz"></div> -->
+    <center>
+      <svg width="1400" height="500"></svg>
+    </center>
   </body>
   <style>
     #carousel-title-bg {
@@ -276,6 +283,12 @@
           );
           popularCardImg[i].setAttribute("data-value", `${data.results[i].id}`);
         }
+        let popularStat = [];
+        for (let i = 0; i < data.results.length; i++) {
+          popularStat.push(data.results[i].vote_average);
+        }
+        console.log(popularStat);
+        drawGraph(popularStat);
       }
     }
 
@@ -285,6 +298,58 @@
 
     for (let card of popularCardImg) {
       card.addEventListener("click", getMovieDetails);
+    }
+
+    function drawGraph(vData) {
+      vData = vData.slice(0,10)
+      var svg = d3.select("svg"),
+        margin = 200,
+        width = svg.attr("width") - margin,
+        height = svg.attr("height") - margin;
+
+      var xScale = d3.scaleBand().range([0, width]).padding(0.6),
+        yScale = d3.scaleLinear().range([height, 0]);
+
+      var g = svg
+        .append("g")
+        .attr("transform", "translate(" + 100 + "," + 100 + ")");
+
+      xScale.domain(vData);
+      yScale.domain([0, 10]);
+
+      g.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(
+          d3.axisBottom(xScale).tickFormat(function (d) {
+            return "score: " + d;
+          })
+        );
+
+      g.append("g").call(
+        d3
+          .axisLeft(yScale)
+          .tickFormat(function (d) {
+            return "⭐ " + d;
+          })
+          .ticks(4)
+      );
+
+      g.selectAll(".bar")
+        .data(vData)
+        .enter()
+        .append("rect")
+        .attr("class", "bar")
+        .attr("fill", "#ff1c76")
+        .attr("x", function (d) {
+          return xScale(d);
+        })
+        .attr("y", function (d) {
+          return yScale(d);
+        })
+        .attr("width", xScale.bandwidth())
+        .attr("height", function (d) {
+          return height - yScale(d);
+        });
     }
 
     getNowPlaying();
